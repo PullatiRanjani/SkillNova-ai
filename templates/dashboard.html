@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}PS42 · Progress{% endblock %}
+
+{% block content %}
+
+<div class="dash">
+
+    <div class="eyebrow">YOUR PROGRESS</div>
+
+    <h1>Assessment history</h1>
+
+    <p class="muted">
+        Your real attempts, scores and learning journey.
+    </p>
+
+
+    <!-- STATS -->
+
+    <div class="stats">
+
+        <div>
+            <small>ATTEMPTS</small>
+            <b>{{ attempts|length }}</b>
+        </div>
+
+        <div>
+            <small>BEST SCORE</small>
+
+            <b>
+                {% if attempts %}
+                    {{ attempts|map(attribute='score')|max|int }}%
+                {% else %}
+                    —
+                {% endif %}
+            </b>
+        </div>
+
+    </div>
+
+
+    <!-- ASSESSMENTS -->
+
+    <div class="history">
+
+        {% for a in attempts %}
+
+        <div class="assessment-history-card">
+
+            <!-- HEADER -->
+
+            <div class="history-row">
+
+                <div>
+                    <b>{{ a.target_role }}</b>
+
+                    <span>
+                        {{ a.course }}
+                    </span>
+                </div>
+
+                <strong>
+                    {{ a.score|int }}%
+                </strong>
+
+                <small>
+                    {{ a.created_at }}
+                </small>
+
+            </div>
+
+
+            {% if a.result %}
+
+            <!-- STRONG SKILLS -->
+
+            {% if a.result.strong_skills %}
+
+            <div class="result-section">
+
+                <h3>Strong skills</h3>
+
+                <div class="skill-list">
+
+                    {% for skill in a.result.strong_skills %}
+
+                    <span class="skill strong">
+                        {{ skill }}
+                    </span>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- TOPICS TO LEARN -->
+
+            {% if a.result.weak_skills %}
+
+            <div class="result-section">
+
+                <h3>Topics you need to learn</h3>
+
+                <div class="skill-list">
+
+                    {% for skill in a.result.weak_skills %}
+
+                    <span class="skill weak">
+                        {{ skill }}
+                    </span>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- ROADMAP -->
+
+            {% if a.result.roadmap %}
+
+            <div class="result-section">
+
+                <h3>Recommended learning roadmap</h3>
+
+                <div class="roadmap">
+
+                    {% for item in a.result.roadmap %}
+
+                    <div class="roadmap-item">
+
+                        <div>
+
+                            <b>
+                                {{ item.skill }}
+                            </b>
+
+                            <p>
+                                {{ item.recommendation }}
+                            </p>
+
+                        </div>
+
+                        <span>
+                            {{ item.priority }}
+                        </span>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+            {% endif %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty">
+            No assessments yet.
+            Start one from your AI workspace.
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

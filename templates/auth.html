@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}PS42 · {{mode|title}}{% endblock %}{% block content %}
+<div class="auth-page"><div class="auth-brand"><div class="logo-big">S</div><h1>SkillNova AI</h1><p>Your AI skill & learning assistant.</p></div>
+<form class="auth-card" method="post"><div class="eyebrow">PERSONAL AI WORKSPACE</div><h2>{{"Create your account" if mode=="register" else "Welcome back"}}</h2>
+{% if mode=="register" %}<label>Name<input name="name" placeholder="Your name" required></label>{% endif %}
+<label>Email<input type="email" name="email" placeholder="you@example.com" required></label>
+<label>Password<input type="password" name="password" placeholder="••••••••" required></label>
+<button class="btn" type="submit">{{"Create account" if mode=="register" else "Sign in"}} →</button>
+<p class="switch">{% if mode=="register" %}Already have an account? <a href="{{url_for('login')}}">Sign in</a>{% else %}New to SkillBridge AI? <a href="{{url_for('register')}}">Create account</a>{% endif %}</p>
+</form></div>{% endblock %}
