@@ -1,0 +1,381 @@
+{% extends "base.html" %}
+
+{% block title %}PS42 · Skill Snapshot{% endblock %}
+
+{% block content %}
+
+<div class="result-page">
+
+    <!-- RESULT HEADER -->
+    <div class="result-head">
+
+        <div>
+            <div class="eyebrow">
+                YOUR PERSONALIZED SKILL SNAPSHOT
+            </div>
+
+            <h1>Assessment complete.</h1>
+
+            <p>{{ role }} · {{ course }}</p>
+        </div>
+
+        <div class="score">
+            {{ result.score }}<small>%</small>
+
+            <span>
+                {{ result.correct }}/{{ result.total }} correct
+            </span>
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+    <div class="summary-grid">
+
+        <div class="summary-card">
+            <span class="summary-icon">✓</span>
+
+            <div>
+                <small>SCORE</small>
+                <strong>{{ result.score }}%</strong>
+            </div>
+        </div>
+
+
+        <div class="summary-card">
+            <span class="summary-icon">✓</span>
+
+            <div>
+                <small>CORRECT</small>
+                <strong>
+                    {{ result.correct }}/{{ result.total }}
+                </strong>
+            </div>
+        </div>
+
+
+        <div class="summary-card">
+            <span class="summary-icon">✦</span>
+
+            <div>
+                <small>STRONG AREAS</small>
+                <strong>
+                    {{ result.strong_skills|length }}
+                </strong>
+            </div>
+        </div>
+
+
+        <div class="summary-card">
+            <span class="summary-icon">→</span>
+
+            <div>
+                <small>FOCUS AREAS</small>
+                <strong>
+                    {{ result.weak_skills|length }}
+                </strong>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- STRONG / WEAK -->
+    <div class="twocol">
+
+        <article class="panel">
+
+            <div class="eyebrow">
+                STRONG SKILLS
+            </div>
+
+            <h2>What you're doing well</h2>
+
+            {% if result.strong_skills %}
+
+                {% for skill in result.strong_skills %}
+
+                    <div class="pill green">
+                        ✓ {{ skill }}
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>
+                    Keep practicing and your strengths
+                    will become clearer.
+                </p>
+
+            {% endif %}
+
+        </article>
+
+
+        <article class="panel">
+
+            <div class="eyebrow">
+                FOCUS AREAS
+            </div>
+
+            <h2>Where to improve</h2>
+
+            {% if result.weak_skills %}
+
+                {% for skill in result.weak_skills %}
+
+                    <div class="pill purple">
+                        → {{ skill }}
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>
+                    No major weak area identified.
+                </p>
+
+            {% endif %}
+
+        </article>
+
+    </div>
+
+
+    <!-- SKILL ANALYSIS -->
+    <article class="panel">
+
+        <div class="eyebrow">
+            SKILL ANALYSIS
+        </div>
+
+        <h2>Topic performance</h2>
+
+        {% if result.skill_analysis %}
+
+            {% for skill in result.skill_analysis %}
+
+                <div class="skill">
+
+                    <div class="skill-info">
+
+                        <div>
+                            <b>{{ skill.skill }}</b>
+
+                            <small>
+                                {{ skill.level }}
+                            </small>
+                        </div>
+
+                        <strong>
+                            {{ skill.score }}%
+                        </strong>
+
+                    </div>
+
+
+                    <!--
+                        CSS variable is used instead of
+                        inline width styling.
+                    -->
+
+                    <div class="bar">
+
+                        <i
+                            class="skill-progress"
+                            data-score="{{ skill.score }}"
+                        ></i>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>
+                Skill analysis is not available.
+            </p>
+
+        {% endif %}
+
+    </article>
+
+
+    <!-- ROADMAP -->
+    <article class="panel">
+
+        <div class="eyebrow">
+            PERSONALIZED ROADMAP
+        </div>
+
+        <h2>What to do next</h2>
+
+        {% if result.roadmap %}
+
+            {% for item in result.roadmap %}
+
+                <div class="road">
+
+                    <span class="priority">
+                        {{ item.priority }}
+                    </span>
+
+                    <div>
+
+                        <b>
+                            {{ item.skill }}
+                        </b>
+
+                        <p>
+                            {{ item.recommendation }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>
+                Your personalized roadmap is not available.
+            </p>
+
+        {% endif %}
+
+    </article>
+
+
+    <!-- OVERALL MESSAGE -->
+    <article class="result-message">
+
+        {% if result.score >= 80 %}
+
+            <div class="message-icon">🎉</div>
+
+            <div>
+
+                <h2>Great work!</h2>
+
+                <p>
+                    You have demonstrated strong knowledge
+                    in several areas. Keep practicing and
+                    focus on the remaining skill gaps.
+                </p>
+
+            </div>
+
+
+        {% elif result.score >= 50 %}
+
+            <div class="message-icon">✦</div>
+
+            <div>
+
+                <h2>Good progress!</h2>
+
+                <p>
+                    You have a solid foundation. Strengthen
+                    your focus areas and continue practicing.
+                </p>
+
+            </div>
+
+
+        {% else %}
+
+            <div class="message-icon">🚀</div>
+
+            <div>
+
+                <h2>Your learning journey starts here.</h2>
+
+                <p>
+                    Use your personalized roadmap to
+                    strengthen your skills step by step.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </article>
+
+
+    <!-- ACTIONS -->
+    <div class="result-actions">
+
+        <a
+            class="btn"
+            href="{{ url_for('index') }}"
+        >
+            ← Continue with PS42 AI
+        </a>
+
+        <a
+            class="btn secondary"
+            href="{{ url_for('dashboard') }}"
+        >
+            View Progress
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SKILL BAR SCRIPT
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const bars =
+            document.querySelectorAll(
+                ".skill-progress"
+            );
+
+        bars.forEach(
+            function (bar) {
+
+                const score =
+                    Number(
+                        bar.dataset.score
+                    );
+
+                if (
+                    Number.isFinite(score)
+                ) {
+
+                    const safeScore =
+                        Math.max(
+                            0,
+                            Math.min(
+                                100,
+                                score
+                            )
+                        );
+
+                    bar.style.width =
+                        safeScore + "%";
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+
+{% block title %}Personalized AI Skill Development{% endblock %}
+
+{% block content %}
+
+<div class="workspace">
+
+    <!-- =========================
+         LEFT SIDEBAR
+    ========================== -->
+
+    <aside class="side">
+
+        <div class="mini-brand">
+            Personalized AI Skill Development
+            <span>AI</span>
+        </div>
+
+        <button
+            type="button"
+            class="newchat"
+            onclick="clearChat()"
+        >
+            ＋ New conversation
+        </button>
+
+
+        <div class="side-title">
+            YOUR CONTEXT
+        </div>
+
+
+        <form
+            action="{{ url_for('context') }}"
+            method="POST"
+            class="context"
+        >
+
+            <label>
+                Target role / skill
+
+                <input
+                    id="role"
+                    name="role"
+                    type="text"
+                    value="{{ user['role'] }}"
+                    placeholder="Any role or skill"
+                >
+            </label>
+
+
+            <label>
+                Course / learning area
+
+                <input
+                    id="course"
+                    name="course"
+                    type="text"
+                    value="{{ user['course'] }}"
+                    placeholder="Any course or topic"
+                >
+            </label>
+
+
+            <button
+                type="submit"
+                class="save"
+            >
+                Save context
+            </button>
+
+        </form>
+
+
+        <div class="hint">
+            Nothing is predefined. Type anything.
+        </div>
+
+    </aside>
+
+
+
+    <!-- =========================
+         CHAT AREA
+    ========================== -->
+
+    <section class="chat">
+
+        <div class="chat-head">
+
+            <div>
+
+                <div class="status">
+                    ● ONLINE
+                </div>
+
+                <h1>
+                    Personalized AI Skill Development
+                </h1>
+
+                <p>
+                    Your personal skill & learning assistant
+                </p>
+
+            </div>
+
+
+            <div class="avatar">
+                AI
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             MESSAGES
+        ========================== -->
+
+        <div
+            id="messages"
+            class="messages"
+        >
+
+            {% if messages %}
+
+                {% for m in messages %}
+
+                    <div class="msg {{ m['role'] }}">
+
+                        <div class="bubble">
+                            {{ m['content']
+                               |replace('\n','<br>')
+                               |safe }}
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="welcome">
+
+                    <div class="spark">
+                        ✦
+                    </div>
+
+                    <h2>
+                        What do you want to learn?
+                    </h2>
+
+                    <p>
+                        Ask anything, or set your role and course
+                        on the left to start a personalized assessment.
+                    </p>
+
+
+                    <div class="suggestions">
+
+                        <button
+                            type="button"
+                            onclick="ask('Explain a difficult concept to me in a simple way')"
+                        >
+                            Explain a concept
+                        </button>
+
+
+                        <button
+                            type="button"
+                            onclick="ask('Help me make a learning plan')"
+                        >
+                            Make a learning plan
+                        </button>
+
+
+                        <button
+                            type="button"
+                            onclick="ask('Give me practice questions')"
+                        >
+                            Practice questions
+                        </button>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- =========================
+             CHAT COMPOSER
+        ========================== -->
+
+        <div class="composer">
+
+            <textarea
+                id="input"
+                placeholder="Message Personalized AI Skill Development..."
+                rows="1"
+            ></textarea>
+
+
+            <button
+                type="button"
+                onclick="send()"
+            >
+                ↑
+            </button>
+
+
+            <small>
+                AI can make mistakes. Verify important information.
+            </small>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+
+<!-- =========================
+     ASSESSMENT BAR
+========================== -->
+
+<div class="assessment-bar">
+
+    <div>
+
+        <b>
+            Ready for a skill check?
+        </b>
+
+        <span>
+            Use your role + course to generate a personalized assessment.
+        </span>
+
+    </div>
+
+
+    <!-- IMPORTANT:
+         Direct POST request to Flask
+    -->
+
+    <form
+        action="/assessment/start"
+        method="POST"
+    >
+
+        <input
+            type="text"
+            name="role"
+            value="{{ user['role'] }}"
+            placeholder="Target role / skill"
+            required
+        >
+
+
+        <input
+            type="text"
+            name="course"
+            value="{{ user['course'] }}"
+            placeholder="Course / skill"
+            required
+        >
+
+
+        <button
+            type="submit"
+            class="btn"
+        >
+            ✦ Start the Assessment
+        </button>
+
+    </form>
+
+</div>
+
+
+
+<!-- =========================
+     CHAT JAVASCRIPT
+========================== -->
+
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+
+{% endblock %}

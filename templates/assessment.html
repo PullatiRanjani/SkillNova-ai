@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block title %}PS42 · Skill Assessment{% endblock %}
+
+{% block content %}
+
+<div class="assessment-page">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="assess-head">
+
+        <div>
+            <div class="eyebrow">
+                PERSONALIZED SKILL ASSESSMENT
+            </div>
+
+            <h1>Test your skills.</h1>
+
+            <p>
+                {{ role }} · {{ course }}
+            </p>
+        </div>
+
+        <div class="counter">
+            <strong>
+                {{ assessment.questions|length }}
+            </strong>
+            Questions
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         QUESTIONS
+    ====================================================== -->
+
+    <form
+        action="{{ url_for('assessment_submit') }}"
+        method="POST"
+        id="assessmentForm"
+    >
+
+        <input
+            type="hidden"
+            name="token"
+            value="{{ token }}"
+        >
+
+        <div class="questions">
+
+            {% for q in assessment.questions %}
+
+                {% set question_index = loop.index0 %}
+
+                <article class="qcard">
+
+                    <!-- QUESTION HEADER -->
+
+                    <div class="qtop">
+
+                        <span>
+                            QUESTION {{ loop.index }}
+                        </span>
+
+                        {% if q.skill %}
+                            <em>
+                                {{ q.skill }}
+                            </em>
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- QUESTION -->
+
+                    <h2>
+                        {{ q.question }}
+                    </h2>
+
+
+                    <!-- OPTIONS -->
+
+                    <div class="opts">
+
+                        {% for option in q.options %}
+
+                            <label>
+
+                                <input
+                                    type="radio"
+                                    name="q{{ question_index }}"
+                                    value="{{ option }}"
+                                    required
+                                >
+
+                                <span>
+                                    {{ option }}
+                                </span>
+
+                            </label>
+
+                        {% endfor %}
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- =================================================
+             SUBMIT
+        ================================================== -->
+
+        <div class="submit">
+
+            <button
+                type="submit"
+                class="btn"
+                id="submitBtn"
+            >
+                Submit Assessment
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const form =
+            document.getElementById(
+                "assessmentForm"
+            );
+
+        const submitBtn =
+            document.getElementById(
+                "submitBtn"
+            );
+
+        if (!form || !submitBtn) {
+            return;
+        }
+
+
+        form.addEventListener(
+            "submit",
+            function (event) {
+
+                const questions =
+                    document.querySelectorAll(
+                        ".qcard"
+                    );
+
+                let unanswered = 0;
+
+
+                questions.forEach(
+                    function (question) {
+
+                        const selected =
+                            question.querySelector(
+                                "input[type='radio']:checked"
+                            );
+
+                        if (!selected) {
+
+                            unanswered++;
+
+                            question.scrollIntoView({
+                                behavior: "smooth",
+                                block: "center"
+                            });
+
+                        }
+
+                    }
+                );
+
+
+                if (unanswered > 0) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Please answer all questions before submitting."
+                    );
+
+                    return;
+                }
+
+
+                /* Prevent double submission */
+
+                submitBtn.disabled = true;
+
+                submitBtn.textContent =
+                    "Evaluating your answers...";
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+{% endblock %}
